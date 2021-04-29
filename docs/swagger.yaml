@@ -1,0 +1,387 @@
+basePath: /
+definitions:
+  models.Artist:
+    properties:
+      birth_date:
+        type: string
+      city:
+        type: string
+      fullname:
+        type: string
+      id:
+        type: integer
+      nickname:
+        type: string
+    type: object
+  models.ArtistResponse:
+    properties:
+      artists:
+        items:
+          $ref: '#/definitions/models.Artist'
+        type: array
+    type: object
+  models.ErrorJSON:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Music:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      genre:
+        type: string
+      id:
+        type: integer
+      legth:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  models.MusicResponse:
+    properties:
+      musics:
+        items:
+          $ref: '#/definitions/models.Music'
+        type: array
+    type: object
+  models.SuccessJSON:
+    properties:
+      success:
+        type: string
+    type: object
+  models.TokenRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  models.User:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: muhamedzhanov.erzhan@mail.ru
+    name: Mukhamedjanov Erjan
+    url: http://www.swagger.io/support
+  description: By Mukhamedjanov Erjan
+  termsOfService: http://swagger.io/terms/
+  title: Swagger For Music Api
+  version: "1.0"
+paths:
+  /artist:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ArtistResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Get all artists
+      tags:
+      - Artists
+    post:
+      consumes:
+      - application/json
+      description: Inserts artist's data to database
+      parameters:
+      - description: Inserts this data into database
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Artist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Add artist
+      tags:
+      - Artists
+  /artist/{id}:
+    delete:
+      description: Delete artist by it's id
+      parameters:
+      - description: Artist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Delete artist
+      tags:
+      - Artists
+    get:
+      description: Get particular artist by its id
+      parameters:
+      - description: Artist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Artist'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Get artist
+      tags:
+      - Artists
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Gives the token to requested machine, if it provided valid login
+        and password
+      parameters:
+      - description: Requires login and password in order to give token
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.TokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Login
+      tags:
+      - Users
+  /music:
+    get:
+      description: Get all or filtered list of music. Filters are search, genre, album.
+        Could be used partially [Not reqired]
+      parameters:
+      - in: query
+        name: album
+        type: string
+      - in: query
+        name: genre
+        type: string
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MusicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Get multiple musics
+      tags:
+      - Musics
+    post:
+      consumes:
+      - application/json
+      description: Inserts music to database
+      parameters:
+      - description: Inserts this data into database
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Music'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Insert music
+      tags:
+      - Musics
+  /music/{id}:
+    delete:
+      description: Delete music by it's id
+      parameters:
+      - description: Music ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Delete music
+      tags:
+      - Musics
+    get:
+      description: Get particular music by its id
+      parameters:
+      - description: Music ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Music'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Get music
+      tags:
+      - Musics
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Inserts user to database
+      parameters:
+      - description: Inserts this data into database
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Sign up
+      tags:
+      - Users
+  /user:
+    delete:
+      description: Delete user that holds token
+      parameters:
+      - description: Artist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessJSON'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorJSON'
+      summary: Delete user
+      tags:
+      - Users
+swagger: "2.0"
